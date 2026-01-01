@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CropYield AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white/95 backdrop-blur-sm p-8 rounded-3xl shadow-2xl max-w-lg w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-green-800">CropYield <span class="text-green-600">AI</span></h1>
+            <p class="text-gray-500 font-medium">Predict your harvest using machine learning</p>
+            
+            <div class="w-full bg-gray-200 h-1.5 mt-4 rounded-full overflow-hidden">
+                <div id="progress" class="bg-green-500 h-full transition-all duration-500" style="width: 20%;"></div>
+            </div>
+        </div>
+
+        <form id="predictionForm" action="/predict" method="post" class="space-y-6">
+            
+            <div class="step active" id="step1">
+                <label class="block text-sm font-bold uppercase text-green-700 mb-2">Annual Rainfall (mm)</label>
+                <input type="number" name="rainfall" step="any" required placeholder="Enter rainfall..."
+                       class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-green-500 outline-none text-lg transition-all">
+                <button type="button" onclick="goToStep(2)" class="mt-4 w-full py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-black transition">Next Feature →</button>
+            </div>
+
+            <div class="step" id="step2">
+                <label class="block text-sm font-bold uppercase text-green-700 mb-2">Soil Quality (1-10)</label>
+                <input type="number" name="soil_quality" step="0.1" required placeholder="e.g. 7.5"
+                       class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-green-500 outline-none text-lg transition-all">
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="goToStep(1)" class="w-1/3 py-3 bg-gray-200 text-gray-600 rounded-xl font-bold">Back</button>
+                    <button type="button" onclick="goToStep(3)" class="w-2/3 py-3 bg-gray-800 text-white rounded-xl font-bold">Next →</button>
+                </div>
+            </div>
+
+            <div class="step" id="step3">
+                <label class="block text-sm font-bold uppercase text-green-700 mb-2">Farm Size (Acres)</label>
+                <input type="number" name="farm_size" step="any" required placeholder="Enter acreage..."
+                       class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-green-500 outline-none text-lg transition-all">
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="goToStep(2)" class="w-1/3 py-3 bg-gray-200 text-gray-600 rounded-xl font-bold">Back</button>
+                    <button type="button" onclick="goToStep(4)" class="w-2/3 py-3 bg-gray-800 text-white rounded-xl font-bold">Next →</button>
+                </div>
+            </div>
+
+            <div class="step" id="step4">
+                <label class="block text-sm font-bold uppercase text-green-700 mb-2">Sunlight (Hours)</label>
+                <input type="number" name="sunlight_hours" step="0.1" required placeholder="Daily average..."
+                       class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-green-500 outline-none text-lg transition-all">
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="goToStep(3)" class="w-1/3 py-3 bg-gray-200 text-gray-600 rounded-xl font-bold">Back</button>
+                    <button type="button" onclick="goToStep(5)" class="w-2/3 py-3 bg-gray-800 text-white rounded-xl font-bold">Next →</button>
+                </div>
+            </div>
+
+            <div class="step" id="step5">
+                <label class="block text-sm font-bold uppercase text-green-700 mb-2">Fertilizer (kg)</label>
+                <input type="number" name="fertilizer" step="any" required placeholder="Amount used..."
+                       class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-green-500 outline-none text-lg transition-all">
+                <div class="flex gap-2 mt-4">
+                    <button type="button" onclick="goToStep(4)" class="w-1/3 py-3 bg-gray-200 text-gray-600 rounded-xl font-bold">Back</button>
+                    <button type="submit" class="predict-btn-blink w-2/3 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-300">
+                        Predict Now
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        {% if prediction_text %}
+        <div class="mt-8 space-y-4 result-appear">
