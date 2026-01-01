@@ -1,0 +1,6 @@
+import pickle
+
+# This saves your trained model into the file we need
+with open('model.pkl', 'wb') as file:
+    pickle.dump(model, file)
+print("Model saved successfully as model.pkl!")
