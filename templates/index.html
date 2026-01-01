@@ -86,8 +86,23 @@
                     {{ prediction_text }}
                 </h3>
             </div>
-
             <div class="p-4 bg-gray-50 border-l-4 border-amber-400 rounded-r-xl">
-                <div class="flex">
-                    <div class="ml-3">
-                        <p class="
+                <p class="text-[10px] md:text-xs text-gray-500 leading-snug">
+                    <span class="font-bold text-gray-700 uppercase tracking-wider">Disclaimer:</span> 
+                    The predicted yield represents output based on historical data. Actual yield may vary.
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + stepNumber).classList.add('active');
+            const progress = (stepNumber / 5) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+    </script>
+</body>
+</html>
